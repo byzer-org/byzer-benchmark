@@ -13,4 +13,5 @@
  group by ss_customer_sk
  order by sumsales, ss_customer_sk
  limit 100
+ AS tb_sql_93
             

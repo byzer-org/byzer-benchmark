@@ -40,3 +40,4 @@
          and ws_item_sk in (select item_sk from frequent_ss_items)
          and ws_bill_customer_sk in (select c_customer_sk from best_ss_customer))) x
  limit 100
+ AS tb_sql_23a

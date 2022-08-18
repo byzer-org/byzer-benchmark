@@ -13,4 +13,5 @@
  group by dt.d_year, item.i_brand, item.i_brand_id
  order by dt.d_year, ext_price desc, brand_id
 limit 100
+ AS tb_sql_52
             

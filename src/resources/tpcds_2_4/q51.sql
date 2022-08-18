@@ -36,4 +36,5 @@
  where web_cumulative > store_cumulative
  order by item_sk, d_date
  limit 100
+ AS tb_sql_51
             

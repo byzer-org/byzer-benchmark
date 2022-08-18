@@ -16,4 +16,5 @@ select i_item_id, i_item_desc
  group by i_item_id, i_item_desc, i_category, i_class, i_current_price
  order by i_category, i_class, i_item_id, i_item_desc, revenueratio
  limit 100
+ AS tb_sql_20
             

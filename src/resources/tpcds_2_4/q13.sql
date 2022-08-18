@@ -48,4 +48,5 @@
   and ca_state in ('VA', 'TX', 'MS')
   and ss_net_profit between 50 and 250
      ))
+  AS tb_sql_13
             

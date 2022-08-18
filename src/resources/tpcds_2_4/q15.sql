@@ -13,4 +13,5 @@
  group by ca_zip
  order by ca_zip
  limit 100
+ AS tb_sql_15
             

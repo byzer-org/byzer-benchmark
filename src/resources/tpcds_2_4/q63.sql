@@ -27,4 +27,5 @@
          ,avg_monthly_sales
          ,sum_sales
  limit 100
+ AS tb_sql_63
             

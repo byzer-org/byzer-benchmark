@@ -18,4 +18,5 @@
  from ssci full outer join csci on (ssci.customer_sk=csci.customer_sk
                                 and ssci.item_sk = csci.item_sk)
  limit 100
+ AS tb_sql_97
             

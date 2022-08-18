@@ -19,4 +19,5 @@
  group by rollup (i_item_id, s_state)
  order by i_item_id, s_state
  limit 100
+ AS tb_sql_27
             

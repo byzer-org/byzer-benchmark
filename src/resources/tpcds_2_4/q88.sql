@@ -90,4 +90,5 @@
           (household_demographics.hd_dep_count = 2 and household_demographics.hd_vehicle_count<=2+2) or
           (household_demographics.hd_dep_count = 0 and household_demographics.hd_vehicle_count<=0+2))
      and store.s_store_name = 'ese') s8
+     AS tb_sql_88
             

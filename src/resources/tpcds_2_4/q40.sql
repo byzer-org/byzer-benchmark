@@ -22,4 +22,5 @@
  group by w_state,i_item_id
  order by w_state,i_item_id
  limit 100
+ AS tb_sql_40
             

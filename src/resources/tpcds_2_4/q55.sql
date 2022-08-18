@@ -11,4 +11,5 @@ select i_brand_id brand_id, i_brand brand,
  group by i_brand, i_brand_id
  order by ext_price desc, brand_id
  limit 100
+ AS tb_sql_55
             

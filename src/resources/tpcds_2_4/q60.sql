@@ -45,4 +45,5 @@
  group by i_item_id
  order by i_item_id, total_sales
  limit 100
+ AS tb_sql_60
             

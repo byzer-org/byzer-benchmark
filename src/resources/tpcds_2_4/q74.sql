@@ -46,4 +46,5 @@
       > case when t_s_firstyear.year_total > 0 then t_s_secyear.year_total / t_s_firstyear.year_total else null end
  order by 1, 1, 1
  limit 100
+ AS tb_sql_74
             

@@ -23,4 +23,5 @@
                   ,c_birth_day,c_birth_month,c_birth_year,c_birth_country,c_login,c_email_address
                   ,c_last_review_date,ctr_total_return
  limit 100
+ AS tb_sql_30
             

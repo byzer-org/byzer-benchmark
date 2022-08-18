@@ -55,4 +55,5 @@
    other_chan_sales_price,
    round(ss_qty/(coalesce(ws_qty+cs_qty,1)),2)
   limit 100
+  AS tb_sql_78
             

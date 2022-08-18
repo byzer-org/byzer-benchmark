@@ -21,4 +21,5 @@
        i_item_sk = sc.ss_item_sk
  order by s_store_name, i_item_desc
  limit 100
+ AS tb_sql_65
             

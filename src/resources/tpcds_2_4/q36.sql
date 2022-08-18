@@ -23,4 +23,5 @@
   ,case when lochierarchy = 0 then i_category end
   ,rank_within_parent
  limit 100
+ AS tb_sql_36
             

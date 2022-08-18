@@ -63,4 +63,5 @@
   and ss_net_profit between 50 and 25000
   )
  )
+ AS tb_sql_48
             
