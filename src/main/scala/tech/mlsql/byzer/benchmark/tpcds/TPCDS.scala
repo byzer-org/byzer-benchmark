@@ -48,10 +48,11 @@ class TPCDS(config: PipelineConfig, dir: DirAndFormat) extends Tpcds_2_4_Queries
 
     val request = Request.Get( config.engineUrl + "/run/script")
     request.setHeader("Content-Type", "application/x-www-form-urlencoded")
-
+    // Assuming content does not contain multiple sql
+    val sql = if( query.content.endsWith(";") ) query.content else query.content + ";"
     val form = Form.form()
     TPCDS.byzerParams( jobName = query.queryName ,
-      sql = query.content,
+      sql = sql,
       defaultPathPrefix = config.defaultPathPrefix)
       .foreach( p => form.add(p._1, p._2))
 
