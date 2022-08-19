@@ -79,4 +79,5 @@
         ,avg(wr_refunded_cash)
         ,avg(wr_fee)
  limit 100
+ AS tb_sql_85
             

@@ -29,4 +29,5 @@
      s_store_name, s_company_id, s_street_number, s_street_name, s_street_type,
      s_suite_number, s_city, s_county, s_state, s_zip
   limit 100
+ AS tb_sql_50
             

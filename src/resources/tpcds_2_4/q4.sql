@@ -100,4 +100,5 @@ WITH year_total AS (
    t_s_secyear.customer_last_name,
    t_s_secyear.customer_preferred_cust_flag
  LIMIT 100
+ AS tb_sql_4
             

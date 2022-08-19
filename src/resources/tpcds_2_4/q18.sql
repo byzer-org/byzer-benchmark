@@ -27,4 +27,5 @@
  group by rollup (i_item_id, ca_country, ca_state, ca_county)
  order by ca_country, ca_state, ca_county, i_item_id
  LIMIT 100
+ AS tb_sql_18
             

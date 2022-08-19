@@ -12,3 +12,4 @@ select
   max(ss_store_sk) as max_ss_store_sk,
   max(ss_promo_sk) as max_ss_promo_sk
 from store_sales
+ AS tb_sql_ss_max

@@ -14,4 +14,5 @@
  		,item.i_category_id
  		,item.i_category
  limit 100
+ AS tb_sql_42
             

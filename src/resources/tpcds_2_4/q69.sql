@@ -29,4 +29,5 @@
  order by cd_gender, cd_marital_status, cd_education_status,
           cd_purchase_estimate, cd_credit_rating
  limit 100
+ AS tb_sql_69
             

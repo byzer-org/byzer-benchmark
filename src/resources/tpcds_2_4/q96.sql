@@ -11,4 +11,5 @@
      and store.s_store_name = 'ese'
  order by count(*)
  limit 100
+ AS tb_sql_96
             

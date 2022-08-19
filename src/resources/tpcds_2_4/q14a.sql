@@ -78,4 +78,5 @@ with cross_items as
  group by rollup (channel, i_brand_id,i_class_id,i_category_id)
  order by channel,i_brand_id,i_class_id,i_category_id
  limit 100
+ AS tb_sql_14a
             

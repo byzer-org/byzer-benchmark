@@ -44,4 +44,5 @@
  order by ca_state, cd_gender, cd_marital_status, cd_dep_count,
           cd_dep_employed_count, cd_dep_college_count
  limit 100
+ AS tb_sql_35
             

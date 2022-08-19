@@ -9,4 +9,5 @@
        group by rollup(i_product_name, i_brand, i_class, i_category)
  order by qoh, i_product_name, i_brand, i_class, i_category
  limit 100
+ AS tb_sql_22
             

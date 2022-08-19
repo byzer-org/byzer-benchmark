@@ -49,4 +49,5 @@
         )))) > 0
  order by i_product_name
  limit 100
+ AS tb_sql_41
             

@@ -18,4 +18,5 @@
  group by i_item_id
  order by i_item_id
  limit 100
+ AS tb_sql_26
             

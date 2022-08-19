@@ -15,4 +15,5 @@
  group by i_brand, i_brand_id, i_manufact_id, i_manufact
  order by ext_price desc, brand, brand_id, i_manufact_id, i_manufact
  limit 100
+ AS tb_sql_19
             

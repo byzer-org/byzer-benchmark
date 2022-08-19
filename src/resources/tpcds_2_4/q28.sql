@@ -50,4 +50,5 @@
              or ss_coupon_amt between 7326 and 7326+1000
              or ss_wholesale_cost between 7 and 7+20)) B6
  limit 100
+ AS tb_sql_28
             

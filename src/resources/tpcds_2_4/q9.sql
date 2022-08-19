@@ -32,4 +32,5 @@ select case when (select count(*) from store_sales
                   where ss_quantity between 81 and 100) end bucket5
 from reason
 where r_reason_sk = 1
+AS tb_sql_9
             
