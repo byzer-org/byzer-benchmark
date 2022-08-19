@@ -68,4 +68,5 @@
  group by rollup(channel, id)
  order by channel, id
  limit 100
+ AS tb_sql_77
             

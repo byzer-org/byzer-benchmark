@@ -17,4 +17,5 @@
  group by ca_zip, ca_city
  order by ca_zip, ca_city
  limit 100
+ AS tb_sql_45
             

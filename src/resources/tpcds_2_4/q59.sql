@@ -41,4 +41,5 @@
    and d_week_seq1=d_week_seq2-52
  order by s_store_name1,s_store_id1,d_week_seq1
  limit 100
+ AS tb_sql_59
             

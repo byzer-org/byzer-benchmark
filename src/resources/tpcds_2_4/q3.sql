@@ -9,4 +9,5 @@
  GROUP BY dt.d_year, item.i_brand, item.i_brand_id
  ORDER BY dt.d_year, sum_agg desc, brand_id
  LIMIT 100
+ AS tb_sql_3
             

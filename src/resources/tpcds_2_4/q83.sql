@@ -37,4 +37,5 @@
    and sr_items.item_id=wr_items.item_id
  order by sr_items.item_id, sr_item_qty
  limit 100
+ AS tb_sql_83
             

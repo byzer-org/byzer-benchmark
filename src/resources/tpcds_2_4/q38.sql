@@ -20,4 +20,5 @@
       and d_month_seq between  1200 and  1200 + 11
  ) hot_cust
  limit 100
+ AS tb_sql_38
             

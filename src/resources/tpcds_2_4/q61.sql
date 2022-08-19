@@ -30,4 +30,5 @@
      and   d_moy  = 11) all_sales
  order by promotions, total
  limit 100
+ AS tb_sql_61
             

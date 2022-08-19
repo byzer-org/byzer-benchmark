@@ -18,4 +18,5 @@
    and sr_cdemo_sk = cd_demo_sk
  order by c_customer_id
  limit 100
+ AS tb_sql_84
             

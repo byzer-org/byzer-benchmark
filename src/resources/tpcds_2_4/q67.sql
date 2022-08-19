@@ -18,4 +18,5 @@
    i_category, i_class, i_brand, i_product_name, d_year,
    d_qoy, d_moy, s_store_id, sumsales, rk
  limit 100
+ AS tb_sql_67
             

@@ -26,4 +26,5 @@
    and current_addr.ca_city <> bought_city
  order by c_last_name, ss_ticket_number
  limit 100
+ AS tb_sql_68
             

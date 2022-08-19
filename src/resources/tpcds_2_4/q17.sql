@@ -31,4 +31,5 @@
  group by i_item_id, i_item_desc, s_state
  order by i_item_id, i_item_desc, s_state
  limit 100
+ AS tb_sql_17
             

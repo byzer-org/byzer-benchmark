@@ -29,4 +29,5 @@
   ,case when lochierarchy = 0 then s_state end
   ,rank_within_parent
  limit 100
+ AS tb_sql_70
             

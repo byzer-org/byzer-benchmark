@@ -19,4 +19,5 @@
          and web_sales.ws_bill_customer_sk = customer.c_customer_sk
          and d_month_seq between 1200 and 1200+11)
 ) cool_cust
+AS tb_sql_87
             

@@ -126,4 +126,5 @@
     ship_carriers, year
  order by w_warehouse_name
  limit 100
+ AS tb_sql_66
             

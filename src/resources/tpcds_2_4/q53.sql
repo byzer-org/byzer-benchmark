@@ -27,4 +27,5 @@
   	 sum_sales,
  	 i_manufact_id
  limit 100
+ AS tb_sql_53
             

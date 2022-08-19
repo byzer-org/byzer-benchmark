@@ -18,4 +18,5 @@ SELECT state, cnt FROM (
 ) x
 WHERE cnt >= 10
 ORDER BY cnt LIMIT 100
+AS tb_sql_6
             

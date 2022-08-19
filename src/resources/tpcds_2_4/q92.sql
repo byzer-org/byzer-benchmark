@@ -16,4 +16,5 @@
      )
  order by sum(ws_ext_discount_amt)
  limit 100
+ AS tb_sql_92
             

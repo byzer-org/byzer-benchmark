@@ -47,4 +47,5 @@
        group by c_last_name,c_first_name)) y
      order by c_last_name,c_first_name,sales
  limit 100
+ AS tb_sql_23b
             

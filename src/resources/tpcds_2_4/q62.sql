@@ -25,4 +25,5 @@
  order by
     substr(w_warehouse_name,1,20), sm_type, web_name
  limit 100
+ AS tb_sql_62
             

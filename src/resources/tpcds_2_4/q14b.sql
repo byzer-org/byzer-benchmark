@@ -63,4 +63,5 @@
    and this_year.i_category_id = last_year.i_category_id
  order by this_year.channel, this_year.i_brand_id, this_year.i_class_id, this_year.i_category_id
  limit 100
+ AS tb_sql_14b
             

@@ -53,4 +53,5 @@
  group by i_manufact_id
  order by total_sales
 limit 100
+AS tb_sql_33
             

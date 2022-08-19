@@ -70,4 +70,5 @@
          ,
 t_s_secyear.customer_preferred_cust_flag
  LIMIT 100
+ AS tb_sql_11
             
