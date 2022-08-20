@@ -21,17 +21,17 @@ spec:
       containers:
         - name: tpcds-data-gen
           securityContext: {}
-          image: "byzer/eks-tpcds-datagen:2.4.5_2.12_0.0.1"
-          imagePullPolicy: IfNotPresent
+          image: "byzer/byzer-lang-k8s-aws:3.1.1-2.3.2-20220817"
+          imagePullPolicy: Always
           command:
             - /bin/sh
             - -c
           args:
             - cat << EOF | bash
-              /opt/spark/bin/spark-submit --master k8s://https://byzer-flag-k8s-dns-064880d2.hcp.chinanorth2.cx.prod.service.azk8s.cn:443
+              /work/spark-3.1.1-bin-hadoop3.2/bin/spark-submit --master k8s_api_server
               --deploy-mode cluster
-              --class com.amazonaws.eks.tpcds.DataGeneration
-              --conf spark.kubernetes.container.image=byzer/eks-tpcds-datagen:2.4.5_2.12_0.0.1
+              --class tech.mlsql.byzer.benchmark.tpcds.DataGeneration
+              --conf spark.kubernetes.container.image=byzer/byzer-lang-k8s-aws:3.1.1-2.3.2-20220817
               --conf spark.driver.memory=4g
               --conf spark.driver.cores=1
               --conf spark.executor.memory=2g
@@ -39,9 +39,7 @@ spec:
               --conf spark.executor.instances=8
               --conf spark.kubernetes.namespace=flag-qa
               --conf spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem        
-              --conf spark.hadoop.fs.s3a.access.key=AKIAQGCLNPTAX5HKPT4Y
-              --conf spark.hadoop.fs.s3a.secret.key=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              
-              local:///opt/spark/jars/byzer-benchmark-0.0.1.jar
+              local:///home/deploy/byzer-benchmark/libs/byzer-benchmark-0.0.1.jar
               s3a://zjc-2/tpcds_parquet_nojuicefs_1gb
               /opt/tpcds-kit/tools
               parquet

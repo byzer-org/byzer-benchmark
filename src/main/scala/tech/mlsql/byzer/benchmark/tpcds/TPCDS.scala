@@ -27,26 +27,21 @@ class TPCDS(config: PipelineConfig, dir: DirAndFormat) extends Tpcds_2_4_Queries
   }
 
   def runBenchmark(): Seq[BenchmarkReport] = {
-    val threadPool = Executors.newFixedThreadPool(Math.max(1, 1))
 
     createTables()
 
     tpcds2_4Queries.foreach{ q =>
-      threadPool.submit(new Callable[BenchmarkReport] {
-        override def call(): BenchmarkReport = {
-          // TODO If failureCountThreshold is reached, stop
-          val report = runScriptSync(q)
-          addReport(report)
-          report
-        }
-      })
+      // TODO If failureCountThreshold is reached, stop
+      val report = runScriptSync(q)
+      addReport(report)
+      logInfo(s"${report}")
     }
     getReport()
   }
 
   def runScriptSync(query: Query): BenchmarkReport = {
 
-    val request = Request.Get( config.engineUrl + "/run/script")
+    val request = Request.Post( config.engineUrl + "/run/script")
     request.setHeader("Content-Type", "application/x-www-form-urlencoded")
     // Assuming content does not contain multiple sql
     val sql = if( query.content.endsWith(";") ) query.content else query.content + ";"
@@ -125,4 +120,4 @@ object TPCDS {
   )
 }
 
-case class BenchmarkReport(query: String, succeed: Boolean, startTime: String, elapsedMilliseconds: Long)
+case class BenchmarkReport(queryName: String, succeed: Boolean, startTime: String, elapsedMilliseconds: Long, errMsg: Option[String] = Option.empty)

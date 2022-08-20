@@ -1,5 +1,9 @@
 package tech.mlsql.byzer.benchmark.tpcds
 
+import java.io.FileWriter
+import com.opencsv.CSVWriter
+
+
 case class PipelineConfig(
                            tpcdsDataDir: String = "",
                            reportDir: String = "",
@@ -70,7 +74,7 @@ object BenchmarkPipelineApp {
   case class DirAndFormat(subDir: String, format: String)
   def generateSubDir(config: PipelineConfig): Seq[DirAndFormat] = {
     // TODO
-    Seq( DirAndFormat("parquet_false_1gb", "parquet" ) )
+    Seq( DirAndFormat("tpcds_parquet_nojuicefs_1gb", "parquet" ) )
   }
 
   def run(config: PipelineConfig): Unit = {
@@ -80,7 +84,21 @@ object BenchmarkPipelineApp {
     generateSubDir(config).foreach { subDir =>
       val tpcds = new TPCDS(config, subDir)
       val reports = tpcds.runBenchmark()
-      // Write reports as csv
+      val header = Array("query_name", "succeed", "start_time", "elapsed_milliseconds")
+      import scala.collection.JavaConverters._
+      tryWithResource(new CSVWriter(new FileWriter(s"${config.reportDir}/${subDir.subDir}_${System.currentTimeMillis()}.csv")) ) { w =>
+        val data = reports.map { r =>
+          Array( r.queryName, r.succeed.toString, r.startTime, r.elapsedMilliseconds.toString )
+        }
+        w.writeAll( (header +: data).asJava )
+      }
+    }
+  }
+
+  def tryWithResource[A <: {def close(): Unit}, B](a: A)(f: A => B): B = {
+    try f(a)
+    finally {
+      if (a != null) a.close()
     }
   }
 
