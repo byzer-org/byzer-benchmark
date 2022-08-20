@@ -92,11 +92,12 @@ object TPCDS {
      "timeout" -> timeout.toString,
       "async" -> async.toString,
       "sessionPerUser" -> sessionPerUser.toString,
-      "maxRetries" -> maxRetries,
+      "maxRetries" -> maxRetries.toString,
       "owner" -> owner
-    ) + baseParams
+    ) ++ baseParams
   }
-  val tables: Seq[String] = (
+
+  val tables: Seq[String] = Seq(
     "catalog_sales",
     "catalog_returns",
     "inventory",
