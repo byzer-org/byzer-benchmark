@@ -70,6 +70,7 @@
             <groupId>com.databricks</groupId>
             <artifactId>spark-sql-perf_2.12</artifactId>
             <version>0.5.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

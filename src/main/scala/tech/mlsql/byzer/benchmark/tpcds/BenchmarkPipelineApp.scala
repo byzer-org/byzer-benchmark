@@ -82,17 +82,24 @@ object BenchmarkPipelineApp {
     // TODO Wait for byzer-lang to be available
     // launch a set of TPC-DS benchmarks sequentially
     generateSubDir(config).foreach { subDir =>
+      println(s"tpcds dir: ${config.tpcdsDataDir}")
       val tpcds = new TPCDS(config, subDir)
       val reports = tpcds.runBenchmark()
-      val header = Array("query_name", "succeed", "start_time", "elapsed_milliseconds")
-      import scala.collection.JavaConverters._
-      tryWithResource(new CSVWriter(new FileWriter(s"${config.reportDir}/${subDir.subDir}_${System.currentTimeMillis()}.csv")) ) { w =>
-        val data = reports.map { r =>
-          Array( r.queryName, r.succeed.toString, r.startTime, r.elapsedMilliseconds.toString )
-        }
-        w.writeAll( (header +: data).asJava )
-      }
+      saveReport(reports, config, subDir)
     }
+  }
+
+  def saveReport(reports: Seq[BenchmarkReport], config: PipelineConfig, subDir: DirAndFormat) : Unit = {
+    val header = Array("query_name", "succeed", "start_time", "elapsed_milliseconds")
+    import scala.collection.JavaConverters._
+    val file = s"${config.reportDir}/${subDir.subDir}_${System.currentTimeMillis()}.csv"
+    tryWithResource(new CSVWriter(new FileWriter(file)) ) { w =>
+      val data = reports.map { r =>
+        Array( r.queryName, r.succeed.toString, r.startTime, r.elapsedMilliseconds.toString )
+      }
+      w.writeAll( (header +: data).asJava )
+    }
+    println(s"Report saved as ${file}")
   }
 
   def tryWithResource[A <: {def close(): Unit}, B](a: A)(f: A => B): B = {
