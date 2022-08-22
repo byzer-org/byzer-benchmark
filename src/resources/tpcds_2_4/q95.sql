@@ -1,14 +1,14 @@
 --q95.sql--
-
- with ws_wh as
- (select ws1.ws_order_number,ws1.ws_warehouse_sk wh1,ws2.ws_warehouse_sk wh2
+select ws1.ws_order_number,ws1.ws_warehouse_sk wh1,ws2.ws_warehouse_sk wh2
   from web_sales ws1,web_sales ws2
   where ws1.ws_order_number = ws2.ws_order_number
-    and ws1.ws_warehouse_sk <> ws2.ws_warehouse_sk)
- select
+    and ws1.ws_warehouse_sk <> ws2.ws_warehouse_sk
+AS ws_wh;
+
+select
     count(distinct ws_order_number) as `order count`
-   ,sum(ws_ext_ship_cost) as `total shipping cost`
-   ,sum(ws_net_profit) as `total net profit`
+   , sum(ws_ext_ship_cost) as `total shipping cost`
+   , sum(ws_net_profit) as `total net profit`
  from
     web_sales ws1, date_dim, customer_address, web_site
  where
@@ -26,5 +26,5 @@
                              where wr_order_number = ws_wh.ws_order_number)
  order by count(distinct ws_order_number)
  limit 100
- AS tb_sql_95
+ AS tb_sql_95;
             

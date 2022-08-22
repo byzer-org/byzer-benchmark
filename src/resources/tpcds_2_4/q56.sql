@@ -1,7 +1,6 @@
 --q56.sql--
 
- with ss as (
- select i_item_id,sum(ss_ext_sales_price) total_sales
+select i_item_id,sum(ss_ext_sales_price) total_sales
  from
  	  store_sales, date_dim, customer_address, item
  where
@@ -12,8 +11,9 @@
  and     d_moy                   = 2
  and     ss_addr_sk              = ca_address_sk
  and     ca_gmt_offset           = -5
- group by i_item_id),
- cs as (
+ group by i_item_id
+ as ss;
+
  select i_item_id,sum(cs_ext_sales_price) total_sales
  from
  	  catalog_sales, date_dim, customer_address, item
@@ -25,20 +25,24 @@
  and     d_moy                   = 2
  and     cs_bill_addr_sk         = ca_address_sk
  and     ca_gmt_offset           = -5
- group by i_item_id),
- ws as (
- select i_item_id,sum(ws_ext_sales_price) total_sales
+ group by i_item_id
+ as cs;
+
+select i_item_id,sum(ws_ext_sales_price) total_sales
  from
  	  web_sales, date_dim, customer_address, item
  where
     i_item_id in (select i_item_id from item where i_color in ('slate','blanched','burnished'))
  and     ws_item_sk              = i_item_sk
  and     ws_sold_date_sk         = d_date_sk
- and     d_year                  = 2001 
+ and     d_year                  = 2001
  and     d_moy                   = 2
  and     ws_bill_addr_sk         = ca_address_sk
  and     ca_gmt_offset           = -5
- group by i_item_id)
+ group by i_item_id
+ as ws;
+
+
  select i_item_id ,sum(total_sales) total_sales
  from  (select * from ss
         union all

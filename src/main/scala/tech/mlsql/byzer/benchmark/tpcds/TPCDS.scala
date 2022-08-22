@@ -19,14 +19,14 @@ class TPCDS(config: PipelineConfig, dir: DirAndFormat) extends Tpcds_2_4_Queries
 
   def getReport(): Seq[BenchmarkReport] = arr
 
-  def createTables(): Boolean = {
+  def createTables(): Unit = {
 
-    val statements = tables.map { t =>
+    tables.foreach { t =>
       val csvConf = dir.format match {
         case "csv" => """and `header`="true""".stripMargin
         case _ =>  " "
       }
-      s"""load FS.`${config.tpcdsDataDir}/${dir.subDir}/${t}`
+      val stmt = s"""load FS.`${config.tpcdsDataDir}/${dir.subDir}/${t}`
           |where `spark.hadoop.fs.AbstractFileSystem.s3a.impl`="org.apache.hadoop.fs.s3a.S3A"
           |and `spark.hadoop.fs.s3a.endpoint`="s3.cn-northwest-1.amazonaws.com"
           |and `spark.hadoop.fs.s3a.impl`="org.apache.hadoop.fs.s3a.S3AFileSystem"
@@ -34,17 +34,17 @@ class TPCDS(config: PipelineConfig, dir: DirAndFormat) extends Tpcds_2_4_Queries
           |${csvConf}
           |AS ${t};
           |""".stripMargin
-    }.mkString(System.lineSeparator())
 
-    runScriptSync(Query("loadTables", statements)).succeed
+      if( ! runScriptSync(Query("loadTables", stmt)).succeed ) System.exit(1)
+    }
+
+
 
   }
 
   def runBenchmark(): Seq[BenchmarkReport] = {
 
-    if(! createTables()) {
-      System.exit(1)
-    }
+    createTables()
 
     tpcds2_4Queries.foreach{ q =>
       // TODO If failureCountThreshold is reached, stop

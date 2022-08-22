@@ -1,6 +1,5 @@
 --q74.sql--
 
- with year_total as (
  select
     c_customer_id customer_id, c_first_name customer_first_name,
     c_last_name customer_last_name, d_year as year,
@@ -23,7 +22,9 @@
     and ws_sold_date_sk = d_date_sk
     and d_year in (2001,2001+1)
  group by
-    c_customer_id, c_first_name, c_last_name, d_year)
+    c_customer_id, c_first_name, c_last_name, d_year
+    as year_total;
+
  select
     t_s_secyear.customer_id, t_s_secyear.customer_first_name, t_s_secyear.customer_last_name
  from

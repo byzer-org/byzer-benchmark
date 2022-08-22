@@ -1,7 +1,6 @@
 --q59.sql--
 
- with wss as
- (select d_week_seq,
+select d_week_seq,
         ss_store_sk,
         sum(case when (d_day_name='Sunday') then ss_sales_price else null end) sun_sales,
         sum(case when (d_day_name='Monday') then ss_sales_price else null end) mon_sales,
@@ -13,7 +12,9 @@
  from store_sales,date_dim
  where d_date_sk = ss_sold_date_sk
  group by d_week_seq,ss_store_sk
- )
+ as wss;
+
+
  select  s_store_name1,s_store_id1,d_week_seq1
        ,sun_sales1/sun_sales2,mon_sales1/mon_sales2
        ,tue_sales1/tue_sales2,wed_sales1/wed_sales2,thu_sales1/thu_sales2

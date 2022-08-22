@@ -16,6 +16,7 @@ object DataGeneration {
     val partitionTables = Try(args(5).toBoolean).getOrElse(false)
     val clusterByPartitionColumns = Try(args(6).toBoolean).getOrElse(false)
     val onlyWarn = Try(args(7).toBoolean).getOrElse(false)
+    val tableFilter = Try(args(8)).getOrElse("")
 
     println(s"DATA DIR is $tpcdsDataDir")
     println(s"Tools dsdgen executable located in $dsdgenDir")
@@ -46,7 +47,7 @@ object DataGeneration {
       partitionTables = partitionTables,  // create the partitioned fact tables
       clusterByPartitionColumns = clusterByPartitionColumns, // shuffle to get partitions coalesced into single files.
       filterOutNullPartitionValues = false, // true to filter out the partition with NULL key value
-      tableFilter = "", // "" means generate all tables
+      tableFilter = tableFilter, // "" means generate all tables
       numPartitions = genPartitions) // how many dsdgen partitions to run - number of input tasks.
 
     println(s"Data generated at $tpcdsDataDir")

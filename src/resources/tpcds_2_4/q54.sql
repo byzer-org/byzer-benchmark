@@ -1,7 +1,6 @@
 --q54.sql--
 
- with my_customers as (
- select distinct c_customer_sk
+select distinct c_customer_sk
         , c_current_addr_sk
  from
         ( select cs_sold_date_sk sold_date_sk,
@@ -24,9 +23,8 @@
          and c_customer_sk = cs_or_ws_sales.customer_sk
          and d_moy = 12
          and d_year = 1998
- )
- , my_revenue as (
- select c_customer_sk,
+ as my_customers;
+select c_customer_sk,
         sum(ss_ext_sales_price) as revenue
  from   my_customers,
         store_sales,
@@ -43,13 +41,15 @@
                            and  (select distinct d_month_seq+3
                                  from   date_dim where d_year = 1998 and d_moy = 12)
  group by c_customer_sk
- )
- , segments as
- (select cast((revenue/50) as integer) as segment from my_revenue)
- select segment, count(*) as num_customers, segment*50 as segment_base
- from segments
- group by segment
- order by segment, num_customers
- limit 100
- AS tb_sql_54
+ as my_revenue;
+
+select cast((revenue/50) as integer) as segment from my_revenue
+as segments;
+
+select segment, count(*) as num_customers, segment*50 as segment_base
+from segments
+group by segment
+order by segment, num_customers
+limit 100
+AS tb_sql_54;
             

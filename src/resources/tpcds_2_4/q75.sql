@@ -1,6 +1,5 @@
 --q75.sql--
 
- WITH all_sales AS (
     SELECT
         d_year, i_brand_id, i_class_id, i_category_id, i_manufact_id,
         SUM(sales_cnt) AS sales_cnt, SUM(sales_amt) AS sales_amt
@@ -37,7 +36,9 @@
         LEFT JOIN web_returns ON (ws_order_number=wr_order_number
                                   AND ws_item_sk=wr_item_sk)
         WHERE i_category='Books') sales_detail
-    GROUP BY d_year, i_brand_id, i_class_id, i_category_id, i_manufact_id)
+    GROUP BY d_year, i_brand_id, i_class_id, i_category_id, i_manufact_id
+    as all_sales;
+
  SELECT
     prev_yr.d_year AS prev_year, curr_yr.d_year AS year, curr_yr.i_brand_id,
     curr_yr.i_class_id, curr_yr.i_category_id, curr_yr.i_manufact_id,

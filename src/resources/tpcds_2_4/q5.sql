@@ -1,7 +1,6 @@
 --q5.sql--
 
- WITH ssr AS
-  (SELECT s_store_id,
+SELECT s_store_id,
           sum(sales_price) as sales,
           sum(profit) as profit,
           sum(return_amt) as returns,
@@ -27,38 +26,39 @@
        and d_date between cast('2000-08-23' as date)
                   and ((cast('2000-08-23' as date) + interval '14' day))
        and store_sk = s_store_sk
- GROUP BY s_store_id),
- csr AS
- (SELECT cp_catalog_page_id,
-         sum(sales_price) as sales,
-         sum(profit) as profit,
-         sum(return_amt) as returns,
-         sum(net_loss) as profit_loss
- FROM
-   (SELECT cs_catalog_page_sk as page_sk,
-           cs_sold_date_sk  as date_sk,
-           cs_ext_sales_price as sales_price,
-           cs_net_profit as profit,
-           cast(0 as decimal(7,2)) as return_amt,
-           cast(0 as decimal(7,2)) as net_loss
-    FROM catalog_sales
-    UNION ALL
-    SELECT cr_catalog_page_sk as page_sk,
-           cr_returned_date_sk as date_sk,
-           cast(0 as decimal(7,2)) as sales_price,
-           cast(0 as decimal(7,2)) as profit,
-           cr_return_amount as return_amt,
-           cr_net_loss as net_loss
-    from catalog_returns
-   ) salesreturns, date_dim, catalog_page
- WHERE date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and ((cast('2000-08-23' as date) + interval '14' day))
-       and page_sk = cp_catalog_page_sk
- GROUP BY cp_catalog_page_id)
- ,
- wsr AS
- (SELECT web_site_id,
+ GROUP BY s_store_id
+ as ssr;
+
+ SELECT cp_catalog_page_id,
+          sum(sales_price) as sales,
+          sum(profit) as profit,
+          sum(return_amt) as returns,
+          sum(net_loss) as profit_loss
+  FROM
+    (SELECT cs_catalog_page_sk as page_sk,
+            cs_sold_date_sk  as date_sk,
+            cs_ext_sales_price as sales_price,
+            cs_net_profit as profit,
+            cast(0 as decimal(7,2)) as return_amt,
+            cast(0 as decimal(7,2)) as net_loss
+     FROM catalog_sales
+     UNION ALL
+     SELECT cr_catalog_page_sk as page_sk,
+            cr_returned_date_sk as date_sk,
+            cast(0 as decimal(7,2)) as sales_price,
+            cast(0 as decimal(7,2)) as profit,
+            cr_return_amount as return_amt,
+            cr_net_loss as net_loss
+     from catalog_returns
+    ) salesreturns, date_dim, catalog_page
+  WHERE date_sk = d_date_sk
+        and d_date between cast('2000-08-23' as date)
+                   and ((cast('2000-08-23' as date) + interval '14' day))
+        and page_sk = cp_catalog_page_sk
+  GROUP BY cp_catalog_page_id
+  as csr;
+
+SELECT web_site_id,
          sum(sales_price) as sales,
          sum(profit) as profit,
          sum(return_amt) as returns,
@@ -86,7 +86,10 @@
        and d_date between cast('2000-08-23' as date)
                   and ((cast('2000-08-23' as date) + interval '14' day))
        and wsr_web_site_sk = web_site_sk
- GROUP BY web_site_id)
+ GROUP BY web_site_id
+ as wsr;
+
+
  SELECT channel,
         id,
         sum(sales) as sales,
@@ -117,5 +120,5 @@
  GROUP BY ROLLUP (channel, id)
  ORDER BY channel, id
  LIMIT 100
- AS tb_sql_5
+ AS tb_sql_5;
             

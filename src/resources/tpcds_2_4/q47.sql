@@ -1,7 +1,5 @@
 --q47.sql--
-
- with v1 as(
- select i_category, i_brand,
+select i_category, i_brand,
         s_store_name, s_company_name,
         d_year, d_moy,
         sum(ss_sales_price) sum_sales,
@@ -24,22 +22,25 @@
        )
  group by i_category, i_brand,
           s_store_name, s_company_name,
-          d_year, d_moy),
- v2 as(
- select v1.i_category, v1.i_brand, v1.s_store_name, v1.s_company_name, v1.d_year, 
-                     v1.d_moy, v1.avg_monthly_sales ,v1.sum_sales, v1_lag.sum_sales psum, 
-                     v1_lead.sum_sales nsum
- from v1, v1 v1_lag, v1 v1_lead
- where v1.i_category = v1_lag.i_category and
-       v1.i_category = v1_lead.i_category and
-       v1.i_brand = v1_lag.i_brand and
-       v1.i_brand = v1_lead.i_brand and
-       v1.s_store_name = v1_lag.s_store_name and
-       v1.s_store_name = v1_lead.s_store_name and
-       v1.s_company_name = v1_lag.s_company_name and
-       v1.s_company_name = v1_lead.s_company_name and
-       v1.rn = v1_lag.rn + 1 and
-       v1.rn = v1_lead.rn - 1)
+          d_year, d_moy
+as v1;
+
+select v1.i_category, v1.i_brand, v1.s_store_name, v1.s_company_name, v1.d_year,
+                      v1.d_moy, v1.avg_monthly_sales ,v1.sum_sales, v1_lag.sum_sales psum,
+                      v1_lead.sum_sales nsum
+from v1, v1 v1_lag, v1 v1_lead
+where v1.i_category = v1_lag.i_category and
+    v1.i_category = v1_lead.i_category and
+    v1.i_brand = v1_lag.i_brand and
+    v1.i_brand = v1_lead.i_brand and
+    v1.s_store_name = v1_lag.s_store_name and
+    v1.s_store_name = v1_lead.s_store_name and
+    v1.s_company_name = v1_lag.s_company_name and
+    v1.s_company_name = v1_lead.s_company_name and
+    v1.rn = v1_lag.rn + 1 and
+    v1.rn = v1_lead.rn - 1
+as v2;
+
  select * from v2
  where  d_year = 1999 and
         avg_monthly_sales > 0 and

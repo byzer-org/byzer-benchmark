@@ -1,6 +1,5 @@
 --q51.sql--
 
- WITH web_v1 as (
  select
    ws_item_sk item_sk, d_date,
    sum(sum(ws_sales_price))
@@ -9,9 +8,10 @@
  where ws_sold_date_sk=d_date_sk
    and d_month_seq between 1200 and 1200+11
    and ws_item_sk is not NULL
- group by ws_item_sk, d_date),
- store_v1 as (
- select
+ group by ws_item_sk, d_date
+ as web_v1;
+
+select
    ss_item_sk item_sk, d_date,
    sum(sum(ss_sales_price))
        over (partition by ss_item_sk order by d_date rows between unbounded preceding and current row) cume_sales
@@ -19,7 +19,9 @@
  where ss_sold_date_sk=d_date_sk
    and d_month_seq between 1200 and 1200+11
    and ss_item_sk is not NULL
- group by ss_item_sk, d_date)
+ group by ss_item_sk, d_date
+ as store_v1;
+
  select *
  from (select item_sk, d_date, web_sales, store_sales
       ,max(web_sales)
@@ -36,5 +38,5 @@
  where web_cumulative > store_cumulative
  order by item_sk, d_date
  limit 100
- AS tb_sql_51
+ AS tb_sql_51;
             

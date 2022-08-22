@@ -1,7 +1,5 @@
 --q57.sql--
-
- with v1 as(
- select i_category, i_brand,
+select i_category, i_brand,
         cc_name,
         d_year, d_moy,
         sum(cs_sales_price) sum_sales,
@@ -21,9 +19,9 @@
          ( d_year = 1999+1 and d_moy =1)
        )
  group by i_category, i_brand,
-          cc_name , d_year, d_moy),
- v2 as(
- select v1.i_category, v1.i_brand, v1.cc_name, v1.d_year, v1.d_moy
+          cc_name , d_year, d_moy
+ as v1;
+select v1.i_category, v1.i_brand, v1.cc_name, v1.d_year, v1.d_moy
         ,v1.avg_monthly_sales
         ,v1.sum_sales, v1_lag.sum_sales psum, v1_lead.sum_sales nsum
  from v1, v1 v1_lag, v1 v1_lead
@@ -34,12 +32,14 @@
        v1. cc_name = v1_lag. cc_name and
        v1. cc_name = v1_lead. cc_name and
        v1.rn = v1_lag.rn + 1 and
-       v1.rn = v1_lead.rn - 1)
+       v1.rn = v1_lead.rn - 1
+ as v2;
+
  select * from v2
  where  d_year = 1999 and
         avg_monthly_sales > 0 and
         case when avg_monthly_sales > 0 then abs(sum_sales - avg_monthly_sales) / avg_monthly_sales else null end > 0.1
  order by sum_sales - avg_monthly_sales, 3
  limit 100
- AS tb_sql_57
+ AS tb_sql_57;
             
