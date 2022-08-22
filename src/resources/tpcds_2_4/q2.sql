@@ -1,14 +1,13 @@
 --q2.sql--
 
- WITH wscs as
- (SELECT sold_date_sk, sales_price
+SELECT sold_date_sk, sales_price
   FROM (SELECT ws_sold_date_sk sold_date_sk, ws_ext_sales_price sales_price
         FROM web_sales
         UNION ALL
        SELECT cs_sold_date_sk sold_date_sk, cs_ext_sales_price sales_price
-        FROM catalog_sales) x),
- wswscs AS
- (SELECT d_week_seq,
+        FROM catalog_sales) x as wscs;
+
+SELECT d_week_seq,
         sum(case when (d_day_name='Sunday') then sales_price else null end) sun_sales,
         sum(case when (d_day_name='Monday') then sales_price else null end) mon_sales,
         sum(case when (d_day_name='Tuesday') then sales_price else  null end) tue_sales,
@@ -18,7 +17,8 @@
         sum(case when (d_day_name='Saturday') then sales_price else null end) sat_sales
  FROM wscs, date_dim
  WHERE d_date_sk = sold_date_sk
- GROUP BY d_week_seq)
+ GROUP BY d_week_seq as wswscs;
+
  SELECT d_week_seq1
        ,round(sun_sales1/sun_sales2,2)
        ,round(mon_sales1/mon_sales2,2)

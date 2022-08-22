@@ -1,7 +1,5 @@
 --q11.sql--
-
- with year_total as (
- select c_customer_id customer_id
+select c_customer_id customer_id
        ,c_first_name customer_first_name
        ,c_last_name customer_last_name
        ,c_preferred_cust_flag customer_preferred_cust_flag
@@ -38,7 +36,8 @@
    and ws_sold_date_sk = d_date_sk
  group by
     c_customer_id, c_first_name, c_last_name, c_preferred_cust_flag, c_birth_country,
-    c_login, c_email_address, d_year)
+    c_login, c_email_address, d_year as year_total;
+
  select
     t_s_secyear.customer_id
    ,t_s_secyear.customer_first_name
