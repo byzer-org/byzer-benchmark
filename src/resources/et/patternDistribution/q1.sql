@@ -1,0 +1,1 @@
+run web_sales as PatternDistribution.`` as tb_sq_1

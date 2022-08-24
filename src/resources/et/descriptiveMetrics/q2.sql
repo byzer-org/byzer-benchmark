@@ -1,0 +1,1 @@
+run store_sales as DescriptiveMetrics.`` as tb_sq_2
