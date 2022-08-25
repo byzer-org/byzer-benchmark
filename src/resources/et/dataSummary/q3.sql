@@ -1,0 +1,1 @@
+run catalog_sales as DataSummary.`` as tb_sq_3

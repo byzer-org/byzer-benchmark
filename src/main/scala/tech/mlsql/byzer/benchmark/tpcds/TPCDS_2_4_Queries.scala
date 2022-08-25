@@ -46,5 +46,5 @@ trait Tpcds_2_4_Queries {
     Query(queryName, content)
   }
 }
-case class Query(queryName: String, content: String)
+case class Query(queryName: String, content: String, outputSize: Option[Int] = Option.empty)
 

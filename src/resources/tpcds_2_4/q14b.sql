@@ -20,7 +20,7 @@ select i_item_sk ss_item_sk
          and d3.d_year between 1999 AND 1999 + 2) x
   where i_brand_id = brand_id
     and i_class_id = class_id
-    and i_category_id = category_id cross_items;
+    and i_category_id = category_id as cross_items;
 
 select avg(quantity*list_price) average_sales
   from (select ss_quantity quantity, ss_list_price list_price

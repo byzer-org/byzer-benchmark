@@ -35,7 +35,7 @@ select i_item_id item_id, sum(ss_ext_sales_price) ss_item_rev
                                       where d_date = cast('2000-01-03' as date)))
    and ws_sold_date_sk   = d_date_sk
   group by i_item_id
-  as ws_item;
+  as ws_items;
 
  select ss_items.item_id
        ,ss_item_rev

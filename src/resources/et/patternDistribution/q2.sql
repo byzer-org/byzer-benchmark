@@ -1,0 +1,1 @@
+run store_sales as PatternDistribution.`` as tb_sq_2
