@@ -13,7 +13,7 @@ select max(csales) tpcds_cmax
         where ss_customer_sk = c_customer_sk
          and ss_sold_date_sk = d_date_sk
          and d_year in (2000, 2000+1, 2000+2,2000+3)
-        group by c_customer_sk) x max_store_sales;
+        group by c_customer_sk) as max_store_sales;
 
 select c_customer_sk,sum(ss_quantity*ss_sales_price) ssales
   from store_sales

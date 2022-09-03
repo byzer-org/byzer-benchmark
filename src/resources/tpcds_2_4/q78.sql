@@ -34,7 +34,7 @@ select d_year AS ws_sold_year, ws_item_sk,
          join date_dim on ss_sold_date_sk = d_date_sk
          where sr_ticket_number is null
          group by d_year, ss_item_sk, ss_customer_sk
-         as cs;
+         as ss;
 
  select
    ss_sold_year, ss_item_sk, ss_customer_sk,

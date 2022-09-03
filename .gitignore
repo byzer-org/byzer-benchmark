@@ -2,3 +2,7 @@
 *.log
 target/**
 .idea/**
+/dev/datagen.sh
+*.iml
+k8s/Dockerfile/datagen/*.jar
+k8s/Dockerfile/benchmark/*.jar

@@ -17,11 +17,15 @@ class TPCDS(config: PipelineConfig, dir: DirAndFormat) extends Tpcds_2_4_Queries
     synchronized( arr += benchmarkReport)
   }
 
+  def addReports(reports: Seq[BenchmarkReport]): Unit = {
+    synchronized( arr ++= reports)
+  }
+
   def getReport(): Seq[BenchmarkReport] = arr
 
-  def createTables(): Unit = {
+  def createTables(): Seq[BenchmarkReport] = {
 
-    tables.foreach { t =>
+    tables.map { t =>
       val csvConf = dir.format match {
         case "csv" => """and `header`="true""".stripMargin
         case _ =>  " "
@@ -35,22 +39,32 @@ class TPCDS(config: PipelineConfig, dir: DirAndFormat) extends Tpcds_2_4_Queries
           |AS ${t};
           |""".stripMargin
 
-      if( ! runScriptSync(Query("loadTables", stmt)).succeed ) System.exit(1)
+      val report = runScriptSync(Query(s"loadTable-${t}", stmt, Some(10)))
+      println( report )
+      report
     }
-
-
 
   }
 
   def runBenchmark(): Seq[BenchmarkReport] = {
 
-    createTables()
+    val reports = createTables()
+    addReports(reports)
+    if( reports.forall(_.succeed) ) {
+      val runQueries = if (config.queryFilter.nonEmpty) {
+        val set = config.queryFilter.split(",").toSet
+        tpcds2_4Queries.filter{ q => set.contains(q.queryName) }
+      }
+      else {
+        tpcds2_4Queries
+      }
 
-    tpcds2_4Queries.foreach{ q =>
-      // TODO If failureCountThreshold is reached, stop
-      val report = runScriptSync(q)
-      addReport(report)
-      println(s"${report}")
+      runQueries.foreach { q =>
+        // TODO If failureCountThreshold is reached, stop
+        val report = runScriptSync(q)
+        addReport(report)
+        println(s"${report}")
+      }
     }
     getReport()
   }
@@ -95,11 +109,11 @@ class TPCDS(config: PipelineConfig, dir: DirAndFormat) extends Tpcds_2_4_Queries
 }
 
 object TPCDS {
-
-
   val baseParams: Map[String, String] = Map(
     "show_stack" -> "true",
     "context.__auth_client__" -> "streaming.dsl.auth.client.DefaultConsoleClient",
+    "fetchType" -> "take",
+    "includeSchema" -> "false"
   )
 
   def byzerParams(jobName: String,
@@ -109,7 +123,8 @@ object TPCDS {
                   async: Boolean = false,
                   sessionPerUser: Boolean = true,
                   maxRetries: Int = 1,
-                  owner: String = "admin"
+                  owner: String = "admin",
+                  outputSize: Option[Int] = Option.empty
                  ): Map[String, String] = {
     Map(
      "jobName" -> jobName,
@@ -119,7 +134,8 @@ object TPCDS {
       "async" -> async.toString,
       "sessionPerUser" -> sessionPerUser.toString,
       "maxRetries" -> maxRetries.toString,
-      "owner" -> owner
+      "owner" -> owner,
+      "outputSize" -> outputSize.getOrElse(100).toString
     ) ++ baseParams
   }
 
