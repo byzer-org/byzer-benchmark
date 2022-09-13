@@ -17,12 +17,19 @@ case class PipelineConfig(
                            engineUrl: String = "",
                            defaultPathPrefix: String = "",
                            failureCountThreshold: Int = 99,
-                           useJuiceFS: String = "true, false, all",
-                           scaleFactor: String = "1gb,10gb,100gb,1tb",
+                           useJuiceFS: String = "true, false",
+                           scaleFactor: String = "1gb,10gb,100gb",
                            format: String = "csv",
                            queryFilter: String = "",
                            awsAK: String = "",
-                           awsSK: String = ""
+                           awsSK: String = "",
+                           sourceType: String = "file",  // file | postgresql
+                           host: String = "",
+                           userName: String = "",
+                           pwd: String = "",
+                           port: String = "",
+                           database: String = "",
+                           tableParallelism: String = ""
                          )
 
 object BenchmarkPipelineApp {
@@ -30,11 +37,6 @@ object BenchmarkPipelineApp {
   lazy val parser = new scopt.OptionParser[PipelineConfig]("tpcds-benchmark") {
 
     head("Byzer-lang TPC-DS benchmark")
-
-    opt[String]('d', "tpcdsDataDir")
-      .action { (x, c) => c.copy(tpcdsDataDir = x)}
-      .text("TPC-DS root data dir")
-      .required()
 
     opt[String]('r', "reportDir")
       .action { (x, c) => c.copy(reportDir = x) }
@@ -51,29 +53,31 @@ object BenchmarkPipelineApp {
       .text("Byzer-lang's defaultPathPrefix")
       .required()
 
-    opt[Int]('f', "failureCountThreshold")
-      .action { (x, c) => c.copy(failureCountThreshold = x)}
-      .text("Failure count threshold to stop benchmark")
+    opt[String]('q', "queryFilter")
+      .action {  (x, c) => c.copy(queryFilter = x)}
+      .text("only runs query number")
+
+    opt[String]( "sourceType")
+      .action { (x, c) => c.copy(sourceType = x) }
+      .text("sourceType: file or postgresql")
       .required()
+
+    // FileDataSource related parameters
+    opt[String]('d', "tpcdsDataDir")
+      .action { (x, c) => c.copy(tpcdsDataDir = x)}
+      .text("TPC-DS root data dir")
 
     opt[String]('j', "useJuiceFS")
       .action { (x, c) => c.copy(useJuiceFS = x)}
       .text("useJuiceFS: juciefs OR noJuicefs")
-      .required()
 
     opt[String]('s', "scaleFactor")
       .action { (x, c) => c.copy(scaleFactor = x)}
       .text("scaleFactor: 1gb OR 10gb OR 100gb OR 1tb")
-      .required()
 
     opt[String]('o', "format")
       .action { (x, c) => c.copy(format = x)}
       .text("format: csv OR parquet")
-      .required()
-
-    opt[String]('q', "queryFilter")
-      .action {  (x, c) => c.copy(queryFilter = x)}
-      .text("only runs query number")
 
     opt[String]('a', "awsAK")
       .action { (x,c) => c.copy(awsAK = x)}
@@ -84,6 +88,32 @@ object BenchmarkPipelineApp {
       .action { ( x, c) => c.copy(awsSK = x)}
       .text("AWS secret key")
       .required()
+
+    // sourceType postgresql related paramters
+    opt[String]("host")
+      .action { (x, c) => c.copy(host = x)}
+      .text("host")
+
+    opt[String]("userName")
+      .action { (x, c) => c.copy(userName = x)}
+      .text("user name")
+
+    opt[String]("pwd")
+      .action { (x, c) => c.copy(pwd = x)}
+      .text("password")
+
+    opt[String]("database")
+      .action { (x, c) => c.copy(database = x)}
+      .text("password")
+
+    opt[String]("port")
+      .action { (x, c) => c.copy(port = x)}
+      .text("port")
+
+    opt[String]("tableParallelism")
+      .action{ (x, c) => c.copy(tableParallelism = x) }
+      .text("An array of table parallelism, format: tableName, partitionColumn, numPartitions, lowerBound, upperBound;" +
+        " example: tbl1,id,1,1,50;tbl2,id,2,1,1000")
   }
 
   def main(args: Array[String]): Unit = {
@@ -95,31 +125,33 @@ object BenchmarkPipelineApp {
     }
   }
 
-  case class DirAndFormat(subDir: String, format: String)
-  def generateSubDir(config: PipelineConfig): Seq[DirAndFormat] = {
-    Seq( DirAndFormat(s"tpcds_${config.format}_${config.useJuiceFS}_${config.scaleFactor}", config.format ) )
-  }
-
   def run(config: PipelineConfig): Unit = {
-    // TODO Write values.yaml.[tpcdsDB] to values.yaml and reinstall helm chart. Note that helm should be installed
-    // TODO Wait for byzer-lang to be available
-    // launch a set of TPC-DS benchmarks sequentially
-    generateSubDir(config).foreach { subDir =>
-      println(s"tpcds dir: ${config.tpcdsDataDir}")
-
-      val tpcds = new TPCDS(config, subDir)
-      val reports = tpcds.runBenchmark()
-      saveReport(reports, config, subDir)
+    val loadReports = config.sourceType match {
+      case "postgresql" => new PostgreSQLDataSource().loadTable(config)
+      case "file" => new FileDataSource().loadTable(config)
     }
+
+    val allReports = if( loadReports.forall(_.succeed)) {
+      val benchmarkReports = new TPCDS(config).runBenchmark()
+      loadReports ++ benchmarkReports
+    }
+    else {
+      loadReports
+    }
+
+    saveReport(allReports, config)
   }
 
-  def saveReport(reports: Seq[BenchmarkReport], config: PipelineConfig, subDir: DirAndFormat) : Unit = {
+  def saveReport(reports: Seq[BenchmarkReport], config: PipelineConfig) : Unit = {
     val header = Array("query_name", "succeed", "start_time", "elapsed_milliseconds", "error")
     import scala.collection.JavaConverters._
     val nowStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+    val database =
+      if ( config.sourceType == "file" ) s"tpcds_${config.format}_${config.useJuiceFS}_${config.scaleFactor}"
+      else config.database
 
-    val file = s"${config.reportDir}/${subDir.subDir}_${nowStr}.csv"
-    val localFile = s"./${subDir.subDir}_${nowStr}.csv"
+    val file = s"${config.reportDir}/${database}_${nowStr}.csv"
+    val localFile = s"./${database}_${nowStr}.csv"
     tryWithResource(new CSVWriter(new FileWriter(localFile)) ) { w =>
       val data = reports.map { r =>
         val err = r.errMsg match {
