@@ -13,3 +13,22 @@
 --scaleFactor 1gb \
 --format parquet
 ```
+
+## Build benchmark image
+
+1. Build the byzer-benchmark-0.0.1.jar
+```shell
+mvn package -DskipTests
+```
+
+2. Build the datagen image
+Copy byzer-benchmark-0.0.1.jar to `k8s/datagen` directory; then build the image:
+
+```shell
+k8s/Dockerfile/datagen/build_benchmark_image.sh
+```
+
+3. Build the benchmark image
+```shell
+k8s/Dockerfile/benchmark/build_benchmark_image.sh
+```

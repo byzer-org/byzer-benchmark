@@ -29,7 +29,8 @@ case class PipelineConfig(
                            pwd: String = "",
                            port: String = "",
                            database: String = "",
-                           tableParallelism: String = ""
+                           tableParallelism: String = "",
+                           tag: String = ""
                          )
 
 object BenchmarkPipelineApp {
@@ -114,6 +115,10 @@ object BenchmarkPipelineApp {
       .action{ (x, c) => c.copy(tableParallelism = x) }
       .text("An array of table parallelism, format: tableName, partitionColumn, numPartitions, lowerBound, upperBound;" +
         " example: tbl1,id,1,1,50;tbl2,id,2,1,1000")
+
+    opt[String]("tag")
+      .action{ (x, c) => c.copy( tag = x)}
+      .text("Tag for benchmark report")
   }
 
   def main(args: Array[String]): Unit = {
@@ -150,7 +155,7 @@ object BenchmarkPipelineApp {
       if ( config.sourceType == "file" ) s"tpcds_${config.format}_${config.useJuiceFS}_${config.scaleFactor}"
       else config.database
 
-    val file = s"${config.reportDir}/${database}_${nowStr}.csv"
+    val file = s"${config.reportDir}/${database}_${nowStr}_${config.tag}.csv"
     val localFile = s"./${database}_${nowStr}.csv"
     tryWithResource(new CSVWriter(new FileWriter(localFile)) ) { w =>
       val data = reports.map { r =>
